@@ -32,7 +32,6 @@ async function run() {
     // user related api
     app.post("/users", async (req, res) => {
       const user = req.body;
-      console.log(user);
       const isExist = await userCollection.findOne({ email: user?.email });
       if (isExist) {
         return res.status(409).send({ message: "User already exists." });
@@ -59,7 +58,14 @@ async function run() {
     });
 
     app.post("/tasks", async (req, res) => {
-      const task = req.body;
+      const { title, description, dueDate, category } = req.body;
+      const task = {
+        title,
+        description,
+        category,
+        dueDate: dueDate ? new Date(dueDate) : null,
+        timestamp: new Date(),
+      };
       const result = await taskCollection.insertOne(task);
       res.send(result);
     });
