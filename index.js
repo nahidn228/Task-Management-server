@@ -45,8 +45,10 @@ async function run() {
     });
 
     // task related apis
-    app.get("/tasks", async (req, res) => {
-      const result = await taskCollection.find().toArray();
+    app.get("/tasks/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const result = await taskCollection.find(query).toArray();
       res.send(result);
     });
 
@@ -58,11 +60,12 @@ async function run() {
     });
 
     app.post("/tasks", async (req, res) => {
-      const { title, description, dueDate, category } = req.body;
+      const { title, description, dueDate, category, email } = req.body;
       const task = {
         title,
         description,
         category,
+        email,
         dueDate: dueDate ? new Date(dueDate) : null,
         timestamp: new Date(),
       };
